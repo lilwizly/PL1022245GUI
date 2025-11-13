@@ -76,21 +76,18 @@ class Quad:
 
     # --- VIDEO UPDATER ---
     def update_videos(self):
-        # 读取摄像头画面
         ret, frame = self.cap.read()
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             img = Image.fromarray(frame)
             imgtk = ImageTk.PhotoImage(image=img)
 
-            # 更新两个视频流标签
             self.video1_label.imgtk = imgtk
             self.video1_label.config(image=imgtk)
 
             self.video2_label.imgtk = imgtk
             self.video2_label.config(image=imgtk)
 
-        # 30ms 后再次调用
         self.root.after(30, self.update_videos)
 
     # --- API FUNCTIONS ---
