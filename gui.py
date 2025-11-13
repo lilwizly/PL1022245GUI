@@ -33,7 +33,7 @@ class Quad:
         # VIDEO STREAMS
         self.cap = cv2.VideoCapture(0)
 
-        # create 2 video label
+        # create 2 video labels
         self.video1_label = tk.Label(self.top_left)
         self.video1_label.pack(fill="both", expand=True)
 
@@ -74,7 +74,7 @@ class Quad:
         # Start video update loop
         self.update_videos()
 
-    # --- VIDEO UPDATER ---
+    #VIDEO UPDATE
     def update_videos(self):
         ret, frame = self.cap.read()
         if ret:
@@ -87,7 +87,7 @@ class Quad:
 
             self.video2_label.imgtk = imgtk
             self.video2_label.config(image=imgtk)
-
+        #raload after 30 seconds
         self.root.after(30, self.update_videos)
 
     # --- API FUNCTIONS ---
