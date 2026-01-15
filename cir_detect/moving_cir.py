@@ -54,7 +54,10 @@ while True:
 
     # Display the result
     cv2.imshow("Can Top Detection", output)
-
+    # Wait for 30 milliseconds for a key event.If the 'q' key is pressed, exit the loop.
+    if cv2.waitKey(30) & 0xFF == ord('q'):
+        break
+# Release video resource
 # Release video resources and close windows
 cap.release()
 cv2.destroyAllWindows()
