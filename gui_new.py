@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image, ImageTk
 
 pi_ip = "192.168.240.123"
-API = "http://127.0.0.1:5010"
+API = "http://192.168.240.123:5010"
 
 
 class Quad:
