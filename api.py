@@ -92,7 +92,6 @@ def raw_frames():
         if not success:
             break
         else:
-            processed = detect_parallel(frame)
             ret, buffer = cv2.imencode('.jpg', frame)
             frame_bytes = buffer.tobytes()
             yield (b'--frame\r\n'
