@@ -37,20 +37,14 @@ class Quad:
     
         self.video1_label = tk.Label(self.top_left, bg="black")
         self.video1_label.pack(expand=True, fill=tk.BOTH)
-
+        # Bottom left
         self.video2_label = tk.Label(self.bottom_left, bg="black")
         self.video2_label.pack(expand=True, fill=tk.BOTH)
 
-        video_url = f"{API}/video_feed"
-        threading.Thread(target=self.update_video, args=(video_url, self.video1_label, self.video2_label), daemon=True).start()
-
-
-
-        # Bottom left
-        self.video2_label = tk.Label(
-            self.bottom_left, text="Video Stream 2", fg="white", bg="black", font=("Arial", 24)
-        )
-        self.video2_label.place(relx=0.5, rely=0.5, anchor="center")
+        video_raw_url = f"{API}/video_raw"
+        video_detect = f"{API}/video_feed"
+        threading.Thread(target=self.update_video, args=(video_raw_url, self.video1_label), daemon=True).start()
+        threading.Thread(target=self.update_video, args=(video_detect, self.video2_label), daemon=True).start()
 
         # Top right controls
         control_frame = tk.Frame(self.top_right, bg="lightgray")
@@ -147,7 +141,7 @@ class Quad:
     def add_log(self, message):
         self.user_log.insert(tk.END, message + "\n")
         self.user_log.see(tk.END)
-    def update_video(self, url, label1, label2):  
+    def update_video(self, url, label):  
         cap = cv2.VideoCapture(url)
         while True:
             ret, frame = cap.read()
@@ -156,11 +150,8 @@ class Quad:
                 img = Image.fromarray(frame)
                 imgtk = ImageTk.PhotoImage(image=img)
     
-                label1.imgtk = imgtk
-                label1.config(image=imgtk)
-    
-                label2.imgtk = imgtk
-                label2.config(image=imgtk)
+                label.imgtk = imgtk
+                label.config(image=imgtk)
             else:
                 cap.release()
                 cv2.waitKey(1000)
