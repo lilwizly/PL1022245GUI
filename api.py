@@ -1,6 +1,7 @@
 #Import Flask and jsonify modules to create the API and return JSON responses
 from flask import Flask, jsonify, Response
 import time
+import cv2
 from parallel import detect_parallel
 
 # Initialize Flask application instance named 'api'
