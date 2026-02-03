@@ -1,7 +1,8 @@
 #Import Flask and jsonify modules to create the API and return JSON responses
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Response
 import time
 from parallel import detect_parallel
+
 # Initialize Flask application instance named 'api'
 api = Flask(__name__)
 # Define the root endpoint '/' that provides a welcome message and lists available API endpoints
@@ -103,4 +104,4 @@ def video_raw():
 
 # Run the Flask app with debug mode enabled if the script is executed directly
 if __name__ == '__main__':
-    api.run(debug=True)
+    api.run(host='0.0.0.0',port='5010',debug=True)
