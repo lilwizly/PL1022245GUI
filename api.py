@@ -78,29 +78,19 @@ def get_frames():
         if not success:
             break
         else:
-            processed = detect_parallel(frame)
             ret, buffer = cv2.imencode('.jpg', frame)
             frame_bytes = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+processed = detect_parallel(get_frames())
 @api.route('/video_feed')
 def video_feed():
-    return Response(get_frames(),
+    return Response(processed,
                     mimetype='multipart/x-mixed-replace; boundary=frame')
-def raw_frames():
-    cap = cv2.VideoCapture(0)
-    while True:
-        success, frame = cap.read()
-        if not success:
-            break
-        else:
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame_bytes = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+
 @api.route('/video_raw')
 def video_raw():
-    return Response(raw_frames(),
+    return Response(get_frames(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 # Run the Flask app with debug mode enabled if the script is executed directly
