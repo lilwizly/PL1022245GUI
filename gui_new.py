@@ -42,7 +42,7 @@ class Quad:
         self.video2_label.pack(expand=True, fill=tk.BOTH)
 
         video_raw_url = f"{API}/video_raw"
-        video_detect = f"{API}/video_feed"
+        video_detect = f"{API}/video_processed"
         threading.Thread(target=self.update_video, args=(video_raw_url, self.video1_label), daemon=True).start()
         threading.Thread(target=self.update_video, args=(video_detect, self.video2_label), daemon=True).start()
 
