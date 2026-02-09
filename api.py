@@ -103,8 +103,8 @@ def gen_processed():
       if latest_frame is None:
         continue
       frame = latest_frame.copy()
-    processed=process_frame(frane.copy())
-    ret, buffer=cv2/imencode('.jpg',processed)
+    processed=process_frame(frame.copy())
+    ret, buffer=cv2.imencode('.jpg',processed)
     frame_bytes=buffer.tobytes()
     yield(b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n'+frame_bytes+b'\r\n')
 @api.route('/video_processed')
