@@ -2,7 +2,7 @@
 from flask import Flask, jsonify, Response
 import time
 import cv2
-from parallel import detect_parallel
+from threading
 
 # Initialize Flask application instance named 'api'
 api = Flask(__name__)
@@ -70,27 +70,39 @@ def start():
   Start route: Instructs the robot to start operation.
   Method: GET
   """
-  return jsonify({"comment": "robot started"})   
-def get_frames():
-    cap = cv2.VideoCapture(0) 
+  return jsonify({"comment": "robot started"})  
+cap = cv2.VideoCapture(0)
+lock=threading.Lock()
+def process_frame(frame):
+  gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+  
+def gen_raw():
     while True:
-        success, frame = cap.read()
-        if not success:
-            break
-        else:
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame_bytes = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
-processed = detect_parallel(get_frames())
-@api.route('/video_feed')
-def video_feed():
-    return Response(processed,
+      with lock:
+        success, frame=cap.read()
+      if not success:
+        break
+      ret, buffer=cv2.imencode('.jpg',frame)
+      frame_bytes=buffer.tobytes()
+      yield(b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n'+frame_bytes+b'\r\n')
+def gen_processed():
+  while True:
+    with lock:
+      success,frame= cap.read()
+    if not success:
+      break
+    processed=process_frame(frane.copy())
+    ret, buffer=cv2/imencode('.jpg',processed)
+    frame_bytes=buffer.tobytes()
+    yield(b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n'+frame_bytes+b'\r\n')
+@api.route('/video_processed')
+def video_processed():
+    return Response(gen_processed(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @api.route('/video_raw')
 def video_raw():
-    return Response(get_frames(),
+    return Response(gen_raw(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 # Run the Flask app with debug mode enabled if the script is executed directly
