@@ -72,25 +72,37 @@ def start():
   """
   return jsonify({"comment": "robot started"})  
 cap = cv2.VideoCapture(0)
-lock=threading.Lock()
+latest_frame = None
+lock = threading.Lock()
+
+def camera_loop():
+    global latest_frame
+    while True:
+        success, frame = cap.read()
+        if success:
+            with lock:
+                latest_frame = frame
+
+threading.Thread(target=camera_loop, daemon=True).start()
+
 def process_frame(frame):
   gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-  
+  return cv2.cvtColor(gray,cv2.COLOR_GRAY2BGR)
 def gen_raw():
     while True:
       with lock:
-        success, frame=cap.read()
-      if not success:
-        break
+        if latest_frame is None:
+            continue
+        frame = latest_frame.copy()
       ret, buffer=cv2.imencode('.jpg',frame)
       frame_bytes=buffer.tobytes()
       yield(b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n'+frame_bytes+b'\r\n')
 def gen_processed():
   while True:
     with lock:
-      success,frame= cap.read()
-    if not success:
-      break
+      if latest_frame is None:
+        continue
+      frame = latest_frame.copy()
     processed=process_frame(frane.copy())
     ret, buffer=cv2/imencode('.jpg',processed)
     frame_bytes=buffer.tobytes()
