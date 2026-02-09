@@ -2,7 +2,7 @@
 from flask import Flask, jsonify, Response
 import time
 import cv2
-from threading
+import threading
 
 # Initialize Flask application instance named 'api'
 api = Flask(__name__)
